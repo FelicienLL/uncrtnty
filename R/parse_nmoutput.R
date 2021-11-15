@@ -22,25 +22,22 @@ parse_ext <- function(tab){
 #' Parse a correlation table to useful matrices
 #'
 #' @param tab a correlation table from NONMEM
-#' @param matrix whether the `THETA`, `OMEGA` or `SIGMA` matrix should be parsed ?
 #'
-#' @return a matrix of numeric. If matrix is `THETA`, the variance-covariance matrix of estimation of `THETA`. If matrix is `OMEGA`/`SIGMA`, a matrix of the standard errors of every elements of the `OMEGA`/`SIGMA` matrices.
+#' @return a list with the variance-covariance matrix of estimation of `THETA`, and the matrices of the standard errors of every elements of the `OMEGA`/`SIGMA` matrices.
 #' @export
 #'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
 #' cor <- get_cor(x)
-#' parse_cor(cor, matrix = "THETA")
-#' parse_cor(cor, matrix = "OMEGA")
-parse_cor <- function(tab, matrix = c("THETA", "OMEGA", "SIGMA")){
+#' parse_cor(cor)
+parse_cor <- function(tab){
   stopifnot(inherits(tab, "data.frame"))
-  m <- matrix[1]
-  stopifnot(matrix %in% c("THETA", "OMEGA", "SIGMA"))
-  ans <- as.matrix(tab[stringr::str_detect(tab$NAME, m), stringr::str_detect(names(tab), m)])
-  if(matrix != "THETA") {
-    ans <- low_to_matrix(sqrt(diag(ans))) # /!\ Diagonal of the covariance matrix, so sqrt to obtain SE !
-  }
-  return(ans)
+  TH <- as.matrix(tab[stringr::str_detect(tab$NAME, "THETA"), stringr::str_detect(names(tab), "THETA")])
+  OM <- as.matrix(tab[stringr::str_detect(tab$NAME, "OMEGA"), stringr::str_detect(names(tab), "OMEGA")])
+  OM <- low_to_matrix(sqrt(diag(OM)))
+  SI <- as.matrix(tab[stringr::str_detect(tab$NAME, "SIGMA"), stringr::str_detect(names(tab), "SIGMA")])
+  SI <- low_to_matrix(sqrt(diag(SI)))
+  list(theta = TH, omega = OM, sigma = SI)
 }
 
 

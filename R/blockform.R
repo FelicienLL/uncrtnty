@@ -83,7 +83,7 @@ parse_blockform_from_lst <- function(lst){
     si_bf <- as.integer(stringr::str_extract(si_lines_block, "\\d+$"))
   }
 
-  list(OMEGA = om_bf, SIGMA = si_bf)
+  list(omega = om_bf, sigma = si_bf)
 
 }
 

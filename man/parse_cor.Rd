@@ -4,15 +4,13 @@
 \alias{parse_cor}
 \title{Parse a correlation table to useful matrices}
 \usage{
-parse_cor(tab, matrix = c("THETA", "OMEGA", "SIGMA"))
+parse_cor(tab)
 }
 \arguments{
 \item{tab}{a correlation table from NONMEM}
-
-\item{matrix}{whether the `THETA`, `OMEGA` or `SIGMA` matrix should be parsed ?}
 }
 \value{
-a matrix of numeric. If matrix is `THETA`, the variance-covariance matrix of estimation of `THETA`. If matrix is `OMEGA`/`SIGMA`, a matrix of the standard errors of every elements of the `OMEGA`/`SIGMA` matrices.
+a list with the variance-covariance matrix of estimation of `THETA`, and the matrices of the standard errors of every elements of the `OMEGA`/`SIGMA` matrices.
 }
 \description{
 Parse a correlation table to useful matrices
@@ -20,6 +18,5 @@ Parse a correlation table to useful matrices
 \examples{
 x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
 cor <- get_cor(x)
-parse_cor(cor, matrix = "THETA")
-parse_cor(cor, matrix = "OMEGA")
+parse_cor(cor)
 }
