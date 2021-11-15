@@ -1,0 +1,13 @@
+Package: uncrtnty
+Type: Package
+Title: Deal with uncertainty within the NONMEM framework
+Version: 0.1.0
+Authors@R: person(given = "Felicien", family = "Le Louedec", 
+             role = c("aut", "cre"), 
+             email = "lelouedec.felicien@iuct-oncopole.fr",
+             comment = c(ORCID = "0000-0003-3699-2729"))
+Description: This is a toolbox to deal with uncertainty with analyses performed with NONMEM. Contains functions to parse information about the form of blocks in a `$OMEGA` or `$SIGMA` matrix, to isolate variance-covariance matrices from a NONMEM output, to compute degrees of freedom, and to automatically write the code that is inserted when the `$PRIOR NWPRI` routine is used.
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.2
