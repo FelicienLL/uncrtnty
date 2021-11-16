@@ -19,18 +19,18 @@ parse_ext <- function(tab){
   )
 }
 
-#' Parse a correlation table to useful matrices
+#' Parse a covariance table to useful matrices
 #'
-#' @param tab a correlation table from NONMEM
+#' @param tab a covariance table from NONMEM
 #'
 #' @return a list with the variance-covariance matrix of estimation of `THETA`, and the matrices of the standard errors of every elements of the `OMEGA`/`SIGMA` matrices.
 #' @export
 #'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' cor <- get_cor(x)
-#' parse_cor(cor)
-parse_cor <- function(tab){
+#' cov <- get_cov(x)
+#' parse_cov(cov)
+parse_cov <- function(tab){
   stopifnot(inherits(tab, "data.frame"))
   TH <- as.matrix(tab[stringr::str_detect(tab$NAME, "THETA"), stringr::str_detect(names(tab), "THETA")])
   OM <- as.matrix(tab[stringr::str_detect(tab$NAME, "OMEGA"), stringr::str_detect(names(tab), "OMEGA")])

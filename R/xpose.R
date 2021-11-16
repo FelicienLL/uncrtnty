@@ -13,19 +13,19 @@ get_lst <- function(xpdb){
   xpdb$code$code[xpdb$code$subroutine=="lst"]
 }
 
-#' Extract .cor file from xpose object
+#' Extract .cov file from xpose object
 #'
 #' @param xpdb an object of "xpose_data" class
 #'
-#' @return cor file in the form of a tibble dataset.
+#' @return cov file in the form of a tibble dataset.
 #' @export
 #'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' get_cor(x)
-get_cor <- function(xpdb){
+#' get_cov(x)
+get_cov <- function(xpdb){
   stopifnot(inherits(xpdb, "xpose_data"))
-  xpdb$files$data[xpdb$files$extension=="cor"][[1]]
+  xpdb$files$data[xpdb$files$extension=="cov"][[1]]
 }
 
 #' Extract .ext file from xpose object
