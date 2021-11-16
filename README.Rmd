@@ -1,0 +1,53 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# uncrtnty
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+The goal of {uncrtnty} is to provide functions to deal with uncertainty in NONMEM analyses.
+
+  * Parse information about the "Block Form" of an OMEGA/SIGMA matrix from:
+    + a *.lst* file with `parse_blockform_from_lst()`.
+    + the matrix itself with `infer_blockform()`.
+  * Turn a full OMEGA/SIGMA matrix into a list of OMEGA/SIGMA matrix blocks with `matrix_to_list()`.
+  * Parse NONMEM estimate file (*.ext*) and covariance matrix file (*.cov*) into convenient output-list with `parse_ext()` and `parse_cov()`.
+  * Compute degrees of freedom of the Inverse-Wishart distribution for OMEGA/SIGMA matrices with `compute_df()`.
+
+These functions are executed under the hood in the following functions, which turns an [xpose](https://github.com/UUPharmacometrics/xpose) database object into:
+
+  * a list of arguments to simulate with uncertainty, for instance with [simpar](https://github.com/metrumresearchgroup/simpar) with `xpose_to_simpar()`.
+  * the code needed for the "$PRIOR NWPRI" routine in NONMEM (*yet to come... soon*).
+
+## Installation
+
+You can install the development version of uncrtnty from [github](https://github.com/FelicienLL/uncrtnty) with:
+
+```{undefined eval=FALSE}
+install.packages("remotes")
+remotes::install_github("FelicienLL/uncrtnty")
+```
+
+## Example
+
+```{r}
+library(uncrtnty)
+x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
+#Example NONMEM run from the xpose package
+xpdb_to_simpar(x)
+```
+
