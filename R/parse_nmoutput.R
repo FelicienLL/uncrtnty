@@ -43,16 +43,22 @@ parse_cov <- function(tab){
 
 low_to_matrix <- function(x){
   lenx <- length(x)
-  dimx <- sqrt(2*length(x) + 0.25) - 0.5 #Reverse of the triangular low
+  dimx <- sqrt(2*length(x) + 0.25) - 0.5 #Reverse of the triangular law
   stopifnot(as.integer(dimx)==dimx, length(dimx)==1L, dimx > 0)
   v <- seq_len(dimx)
-  index_x <- v*(v+1)/2 #triangular low ; where are on-diagonal elements ?
+  index_x <- v*(v+1)/2 #triangular law ; where are on-diagonal elements ?
   is.diag <- seq_len(lenx) %in% index_x #logical. is an on-diag element ?
 
   M <- matrix(nrow = dimx, ncol = dimx) #empty matrix
 
-  diag(M) <- x[is.diag]
-  M[lower.tri(M, diag = FALSE)] <- x[!is.diag]
-  M[upper.tri(M, diag = FALSE)] <- x[!is.diag]
+  diag(M) <- x[is.diag]  #fill diagonal
+  M[upper.tri(M, diag = FALSE)] <- x[!is.diag] #fill upper matrix
+  for(i in v){ #fill lower matrix
+    for(j in v){
+      if(is.na(M[i,j])){
+        M[i,j] <- M[j,i]
+      }
+    }
+  }
   return(M)
 }
