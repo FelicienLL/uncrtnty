@@ -43,3 +43,18 @@ get_ext <- function(xpdb){
   xpdb$files$data[xpdb$files$extension=="ext"][[1]]
 }
 
+#' Extract .phi file from xpose object
+#'
+#' @param xpdb an object of "xpose_data" class
+#'
+#' @return phi file in the form of a tibble dataset.
+#' @export
+#'
+#' @examples
+#' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
+#' get_phi(x)
+get_phi <- function(xpdb){
+  stopifnot(inherits(xpdb, "xpose_data"))
+  xpdb$files$data[xpdb$files$extension=="phi"][[1]]
+}
+

@@ -40,6 +40,32 @@ parse_cov <- function(tab){
   list(theta = TH, omega = OM, sigma = SI)
 }
 
+#' Parse a phi table to useful individual etas and covariance matrix
+#'
+#' @param tab a phi table from NONMEM
+#'
+#' @return a list (length = number of individual), with the vector of estimated etas and the associated variance-covariance matrix of estimation
+#' @export
+#'
+#' @examples
+#' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
+#' phi <- get_phi(x)
+#' parse_phi(head(phi, 3)) #first 3 individuals for the example
+parse_phi <- function(tab){
+  IDs <- tab$ID
+  stopifnot(IDs == unique(IDs))
+  ans <- lapply(IDs, function(x, phi){
+    eta <- phi[phi[["ID"]] == x, stringr::str_detect(names(phi), "ETA")]
+    etc <- phi[phi[["ID"]] == x, stringr::str_detect(names(phi), "ETC")]
+    return(list(
+      ID = x,
+      ETA = unname(as.double(eta)),
+      ETC = low_to_matrix(unname(as.double(etc)))
+    ))
+  }, phi = tab)
+  return(ans)
+}
+
 
 low_to_matrix <- function(x){
   lenx <- length(x)
