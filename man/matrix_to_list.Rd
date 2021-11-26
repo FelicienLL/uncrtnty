@@ -9,7 +9,7 @@ matrix_to_list(x, blockform = integer(0))
 \arguments{
 \item{x}{a symmetric matrix of numeric}
 
-\item{blockform}{integer vector, explicitly defined by the user or by `parse_blockform_from_lst()`. If empty (the default), will be infered with `infer_blockform()`.}
+\item{blockform}{integer vector, explicitly defined by the user or parsed from a .lst file with `parse_lst()`. If empty (the default), will be infered with `infer_blockform()`.}
 }
 \value{
 a list of matrices

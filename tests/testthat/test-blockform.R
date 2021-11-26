@@ -36,7 +36,7 @@ test_that("infer_blockform works", {
   #  testthat::expect_equal(infer_blockform(m12), c(1,1,1,1,1,1))
 })
 
-test_that("parse_blockform_from_lst works", {
+test_that("blockform are parsed from lst", {
 
   lst003a <- readLines(system.file("nm", "run003a.lst", package = "uncrtnty"))
   lst003b <- readLines(system.file("nm", "run003b.lst", package = "uncrtnty"))
@@ -48,15 +48,15 @@ test_that("parse_blockform_from_lst works", {
   lst003h <- readLines(system.file("nm", "run003h.lst", package = "uncrtnty"))
   lst003i <- readLines(system.file("nm", "run003i.lst", package = "uncrtnty"))
 
-  expect_equal(parse_blockform_from_lst(lst003a), list(omega = c(1, 1, 2, 3, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 9, 9), sigma = c(1, 1, 2, 3, 3, 4, 5)))
-  expect_equal(parse_blockform_from_lst(lst003b), list(omega = c(1, 1, 2, 3, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 9, 9), sigma = c(1, 2, 3)))
-  expect_error(parse_blockform_from_lst(lst003c), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
-  expect_equal(parse_blockform_from_lst(lst003d), list(omega = c(1, 2, 3, 4), sigma = c(1, 1, 2, 3, 3, 4, 5)))
-  expect_equal(parse_blockform_from_lst(lst003e), list(omega = c(1, 2, 3, 4), sigma = c(1, 2, 3)))
-  expect_error(parse_blockform_from_lst(lst003f), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
-  expect_error(parse_blockform_from_lst(lst003g), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
-  expect_error(parse_blockform_from_lst(lst003h), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
-  expect_error(parse_blockform_from_lst(lst003i), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
+  expect_equal(parse_lst(lst003a), list(nid = 1, nobs = 0, om_blockform = c(1, 1, 2, 3, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 9, 9), si_blockform = c(1, 1, 2, 3, 3, 4, 5)))
+  expect_equal(parse_lst(lst003b), list(nid = 1, nobs = 0, om_blockform = c(1, 1, 2, 3, 3, 3, 4, 5, 6, 6, 7, 8, 9, 9, 9, 9), si_blockform = c(1, 2, 3)))
+  expect_error(parse_lst(lst003c), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
+  expect_equal(parse_lst(lst003d), list(nid = 1, nobs = 0, om_blockform = c(1, 2, 3, 4), si_blockform = c(1, 1, 2, 3, 3, 4, 5)))
+  expect_equal(parse_lst(lst003e), list(nid = 1, nobs = 0, om_blockform = c(1, 2, 3, 4), si_blockform = c(1, 2, 3)))
+  expect_error(parse_lst(lst003f), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
+  expect_error(parse_lst(lst003g), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
+  expect_error(parse_lst(lst003h), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
+  expect_error(parse_lst(lst003i), "Cannot found both \\$OMEGA and \\$SIGMA in the model")
 })
 
 test_that("matrix_to_list works", {

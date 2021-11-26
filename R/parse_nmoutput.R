@@ -1,3 +1,77 @@
+#' Parse a lst file to a list of relevant information
+#'
+#' @param lst lst file in the form of a character vector.
+#'
+#' @return a list with the number of individuals, number of observations, and the "blockforms" of omega and sigma matrices
+#' @export
+#'
+#' @examples
+#' lst3a <- readLines(system.file("nm", "run003a.lst", package = "uncrtnty"))
+#' parse_lst(lst = lst3a)
+#' lst001 <- readLines(system.file("xposerun", "run001.lst", package = "uncrtnty"))
+#' parse_lst(lst = lst001)
+parse_lst <- function(lst){
+
+  # ======  N OBS/ID  =======
+  nobs_line <- stringr::str_which(lst, " TOT. NO. OF OBS RECS:")
+  nobs <- unique(as.integer(stringr::str_extract(lst[nobs_line], "\\d+$")))
+  if(length(nobs) > 1){
+    message("Not a unique number of observations in lst file. Set to the maximal value.")
+    nobs <- max(nobs, na.rm = TRUE)
+  }
+
+  nid_line <- stringr::str_which(lst, " TOT. NO. OF INDIVIDUALS:")
+  nid <- unique(as.integer(stringr::str_extract(lst[nid_line], "\\d+$")))
+  if(length(nid) > 1){
+    message("Not a unique number of individuals in lst file. Set to the maximal value.")
+    nid <- max(nobs, na.rm = TRUE)
+  }
+
+  # ====== BLOCK FORM =======
+
+  #Test that both $OMEGA and $SIGMA are defined in .lst
+
+  omT <- any(stringr::str_detect(lst, "0OMEGA"))
+  siT <- any(stringr::str_detect(lst, "0SIGMA"))
+
+  if(!all(omT, siT)) stop("Cannot found both $OMEGA and $SIGMA in the model", call. = FALSE)
+
+  #$OMEGA
+
+  om_line_diagonly <- stringr::str_which(lst, "0OMEGA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:")
+
+  if(length(om_line_diagonly) != 0){
+    om_dimmat <- as.integer(stringr::str_extract(lst[om_line_diagonly], "\\d+$"))
+    om_bf <- seq_len(om_dimmat)
+  } else {
+    om_line_start <- stringr::str_which(lst, "0OMEGA HAS BLOCK FORM:") + 1L
+    om_line_end <- stringr::str_which(lst, "0DEFAULT OMEGA BOUNDARY TEST OMITTED:") -1L
+    om_lines_block <- lst[seq.int(om_line_start, om_line_end)]
+    om_bf <- as.integer(stringr::str_extract(om_lines_block, "\\d+$"))
+  }
+
+  #$SIGMA
+  si_line_diagonly <- stringr::str_which(lst, "0SIGMA HAS SIMPLE DIAGONAL FORM WITH DIMENSION:")
+
+  if(length(si_line_diagonly) != 0){
+    si_dimmat <- as.integer(stringr::str_extract(lst[si_line_diagonly], "\\d+$"))
+    si_bf <- seq_len(si_dimmat)
+  } else {
+    si_line_start <- stringr::str_which(lst, "0SIGMA HAS BLOCK FORM:") + 1L
+    si_line_end <- stringr::str_which(lst, "0DEFAULT SIGMA BOUNDARY TEST OMITTED:") -1L
+    si_lines_block <- lst[seq.int(si_line_start, si_line_end)]
+    si_bf <- as.integer(stringr::str_extract(si_lines_block, "\\d+$"))
+  }
+
+  list(
+    nid = nid,
+    nobs = nobs,
+    om_blockform = om_bf,
+    si_blockform = si_bf
+    )
+
+}
+
 #' Parse a ext table to a list with final estimates
 #'
 #' @param tab a ext table from NONMEM
@@ -65,7 +139,6 @@ parse_phi <- function(tab){
   }, phi = tab)
   return(ans)
 }
-
 
 low_to_matrix <- function(x){
   lenx <- length(x)

@@ -11,21 +11,23 @@
 #' class(u)
 u_from_xpdb <- function(xpdb){
   stopifnot(inherits(xpdb, "xpose_data"))
-  blocks <- parse_blockform_from_lst(get_lst(xpdb))
+  p_lst <- parse_lst(get_lst(xpdb))
   p_ext <- parse_ext(get_ext(xpdb))
   p_cov <- parse_cov(get_cov(xpdb))
 
-  omega <- matrix_to_list(p_ext$omega, blockform = blocks$omega)
-  sigma <- matrix_to_list(p_ext$sigma, blockform = blocks$sigma)
+  omega <- matrix_to_list(p_ext$omega, blockform = p_lst$om_blockform)
+  sigma <- matrix_to_list(p_ext$sigma, blockform = p_lst$si_blockform)
 
   ans <- list(
     model  = xpdb$summary$value[xpdb$summary$label=="run"],
+    nid    = p_lst$nid,
+    nobs   = p_lst$obs,
     th_est = p_ext$theta,
     th_unc = p_cov$theta,
     om_est = omega,
-    om_unc = mapply(compute_df, omega, matrix_to_list(p_cov$omega, blockform = blocks$omega)),
+    om_unc = mapply(compute_df, omega, matrix_to_list(p_cov$omega, blockform = p_lst$om_blockform)),
     si_est = sigma,
-    si_unc = mapply(compute_df, sigma, matrix_to_list(p_cov$sigma, blockform = blocks$sigma))
+    si_unc = mapply(compute_df, sigma, matrix_to_list(p_cov$sigma, blockform = p_lst$si_blockform))
   )
   class(ans) <- "uncrtnty"
   return(ans)
