@@ -21,7 +21,7 @@ u_from_xpdb <- function(xpdb){
   ans <- list(
     model  = xpdb$summary$value[xpdb$summary$label=="run"],
     nid    = p_lst$nid,
-    nobs   = p_lst$obs,
+    nobs   = p_lst$nobs,
     th_est = p_ext$theta,
     th_unc = p_cov$theta,
     om_est = omega,
