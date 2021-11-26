@@ -23,9 +23,7 @@ Turn uncrtnty-list into list of arguments for simpar
 The arguments "theta", "covar", "omega", "sigma", "odf" and "sdf" are filled from the information contained in the uncrtnty-list object, unless they are explicitly specified in `...` .
 }
 \examples{
-x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-u <- u_from_xpdb(x)
-args <- u_to_simpar(u, n = 10, sdf = 1000, digits = 5, max = Inf)
+args <- u_to_simpar(u_example, n = 10, sdf = 1000, digits = 5, max = Inf)
 #remotes::install_github("metrumresearchgroup/simpar")
 #do.call(simpar::simpar, args)
 

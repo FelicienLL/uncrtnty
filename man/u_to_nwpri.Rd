@@ -20,8 +20,6 @@ a character vector to be pasted into a NONMEM code
 Turn uncrtnty-list into code for NWPRI in NONMEM
 }
 \examples{
-xpdb <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-u <- u_from_xpdb(xpdb)
-a <- u_to_nwpri(u)
+code <- u_to_nwpri(u_example)
 
 }

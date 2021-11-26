@@ -8,9 +8,7 @@
 #' @export
 #'
 #' @examples
-#' xpdb <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' u <- u_from_xpdb(xpdb)
-#' a <- u_to_nwpri(u)
+#' code <- u_to_nwpri(u_example)
 #'
 u_to_nwpri <- function(u, cat = TRUE, priors_only = FALSE){
   stopifnot(inherits(u, "uncrtnty"))
