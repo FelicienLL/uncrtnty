@@ -1,6 +1,6 @@
-#' Turn uncrtnty into code for NWPRI in NONMEM
+#' Turn uncrtnty-list into code for NWPRI in NONMEM
 #'
-#' @param u an uncrtnty list (uncrtnty list object)
+#' @param u an uncrtnty-list object
 #' @param cat if TRUE (the default), the character vector is passed to `cat` and printed to the console.
 #' @param priors_only if TRUE, only the blocks with priors values and weight are returned.
 #'
@@ -9,18 +9,18 @@
 #'
 #' @examples
 #' xpdb <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' xlist <- xpdb_to_simpar(xpdb)
-#'
-#' a <- u_to_nwpri(xlist)
+#' u <- u_from_xpdb(xpdb)
+#' a <- u_to_nwpri(u)
 #'
 u_to_nwpri <- function(u, cat = TRUE, priors_only = FALSE){
+  stopifnot(inherits(u, "uncrtnty"))
   ans <- paste(c(
-    nwpri_value(u$theta, blocktype = "THETAP"),
-    nwpri_matrix(u$covar, blocktype = "THETAPV"),
-    paste(sapply(u$omega, nwpri_matrix, blocktype = "OMEGAP"), collapse = "\n"),
-    nwpri_value(u$odf, blocktype = "OMEGAPD"),
-    paste(sapply(u$sigma, nwpri_matrix, blocktype = "SIGMAP"), collapse = "\n"),
-    nwpri_value(u$sdf, blocktype = "SIGMAPD")
+    nwpri_value(u$th_est, blocktype = "THETAP"),
+    nwpri_matrix(u$th_unc, blocktype = "THETAPV"),
+    paste(sapply(u$om_est, nwpri_matrix, blocktype = "OMEGAP"), collapse = "\n"),
+    nwpri_value(u$om_unc, blocktype = "OMEGAPD"),
+    paste(sapply(u$si_est, nwpri_matrix, blocktype = "SIGMAP"), collapse = "\n"),
+    nwpri_value(u$si_unc, blocktype = "SIGMAPD")
   ), collapse = "\n\n")
 
   if(!priors_only){

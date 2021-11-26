@@ -2,12 +2,12 @@
 % Please edit documentation in R/to_nwpri.R
 \name{u_to_nwpri}
 \alias{u_to_nwpri}
-\title{Turn uncrtnty into code for NWPRI in NONMEM}
+\title{Turn uncrtnty-list into code for NWPRI in NONMEM}
 \usage{
 u_to_nwpri(u, cat = TRUE, priors_only = FALSE)
 }
 \arguments{
-\item{u}{an uncrtnty list (uncrtnty list object)}
+\item{u}{an uncrtnty-list object}
 
 \item{cat}{if TRUE (the default), the character vector is passed to `cat` and printed to the console.}
 
@@ -17,12 +17,11 @@ u_to_nwpri(u, cat = TRUE, priors_only = FALSE)
 a character vector to be pasted into a NONMEM code
 }
 \description{
-Turn uncrtnty into code for NWPRI in NONMEM
+Turn uncrtnty-list into code for NWPRI in NONMEM
 }
 \examples{
 xpdb <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-xlist <- xpdb_to_simpar(xpdb)
-
-a <- u_to_nwpri(xlist)
+u <- u_from_xpdb(xpdb)
+a <- u_to_nwpri(u)
 
 }
