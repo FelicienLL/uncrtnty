@@ -187,13 +187,91 @@ u_to_simpar(u_example, nsim = 100)
 -   Parse information about the “Block Form” of an OMEGA/SIGMA matrix
     from:
     -   a *.lst* file with `parse_blockform_from_lst()`.
-    -   the matrix itself with `infer_blockform()`.
+
+``` r
+cat(lstfile[84:110], sep = "\n") # zoom inside a NONMEM .lst file
+#> 0OMEGA HAS BLOCK FORM:
+#>   1
+#>   1  1
+#>   0  0  2
+#>   0  0  0  3
+#>   0  0  0  3  3
+#>   0  0  0  3  3  3
+#>   0  0  0  0  0  0  4
+#>   0  0  0  0  0  0  0  5
+#>   0  0  0  0  0  0  0  0  6
+#>   0  0  0  0  0  0  0  0  0  6
+#>   0  0  0  0  0  0  0  0  0  0  7
+#>   0  0  0  0  0  0  0  0  0  0  0  8
+#>   0  0  0  0  0  0  0  0  0  0  0  0  9
+#>   0  0  0  0  0  0  0  0  0  0  0  0  9  9
+#>   0  0  0  0  0  0  0  0  0  0  0  0  0  0  9
+#>   0  0  0  0  0  0  0  0  0  0  0  0  0  0  9  9
+#> 0DEFAULT OMEGA BOUNDARY TEST OMITTED:    NO
+#> 0SIGMA HAS BLOCK FORM:
+#>   1
+#>   1  1
+#>   0  0  2
+#>   0  0  0  3
+#>   0  0  0  0  3
+#>   0  0  0  0  0  4
+#>   0  0  0  0  0  0  5
+#> 0DEFAULT SIGMA BOUNDARY TEST OMITTED:    NO
+parse_blockform_from_lst(lst = lstfile)
+#> $omega
+#>  [1] 1 1 2 3 3 3 4 5 6 6 7 8 9 9 9 9
+#> 
+#> $sigma
+#> [1] 1 1 2 3 3 4 5
+```
+
+-   + the matrix itself with `infer_blockform()`.
+
+``` r
+m
+#>      [,1] [,2] [,3] [,4] [,5]
+#> [1,] 1.00 0.12 0.13    0    0
+#> [2,] 0.12 2.00 0.23    0    0
+#> [3,] 0.13 0.23 3.00    0    0
+#> [4,] 0.00 0.00 0.00    4    0
+#> [5,] 0.00 0.00 0.00    0    5
+infer_blockform(m)
+#> [1] 1 1 1 2 3
+```
+
 -   Turn a full OMEGA/SIGMA matrix into a list of OMEGA/SIGMA matrix
     blocks with `matrix_to_list()`.
+
+``` r
+matrix_to_list(m)
+#> [[1]]
+#>      [,1] [,2] [,3]
+#> [1,] 1.00 0.12 0.13
+#> [2,] 0.12 2.00 0.23
+#> [3,] 0.13 0.23 3.00
+#> 
+#> [[2]]
+#>      [,1]
+#> [1,]    4
+#> 
+#> [[3]]
+#>      [,1]
+#> [1,]    5
+```
+
 -   Parse NONMEM estimate file (*.ext*) and covariance matrix file
     (*.cov*) into convenient output-list with `parse_ext()` and
     `parse_cov()`.
+
 -   Compute degrees of freedom of the Inverse-Wishart distribution for
     OMEGA/SIGMA matrices with `compute_df()`.
+
+``` r
+est_om <- matrix(c(0.2, 0.01, 0.01, 0.1), ncol = 2)
+se_om <- matrix(c(0.02, 0.005, 0.005, 0.03), ncol = 2)
+compute_df(est = est_om, se = se_om)
+#> [1] 22
+```
+
 -   Parse the covariance matrix of estimations of ETA in the context on
     individual parameter estimation `parse_phi()`.
