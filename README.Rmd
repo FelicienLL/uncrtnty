@@ -19,7 +19,52 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of {uncrtnty} is to provide functions to deal with uncertainty in NONMEM analyses.
+{uncrtnty} provides functions and an "uncrtnty"-list class in order to work with uncertainty in NONMEM analyses.
+
+## Installation
+
+You can install the development version of uncrtnty from [github](https://github.com/FelicienLL/uncrtnty) with:
+
+```{r eval=FALSE}
+install.packages("remotes")
+remotes::install_github("FelicienLL/uncrtnty")
+```
+
+## The big idea
+
+In NONMEM analyses, the uncertainty about parameter estimation can be described as followed. The estimation of THETA follows a multivariate normal distribution, with a mean vector (`th_est`) and a covariance matrix (`th_unc`) that carries the information about uncertainty. The estimates of OMEGA/SIGMA are matrices (`om_est/si_est`), and the uncertainty is informed by degrees of freedom (`om_unc/si_unc`). In {uncrtnty}, these information are storred into a single "uncrtnty"-list object.
+
+
+```{r}
+library(uncrtnty)
+u_example
+```
+
+This "uncrtnty"-list object can be created:
+
+  * from an [xpose](https://github.com/UUPharmacometrics/xpose) database object: `u_from_xpdb()`.
+  * from NONMEM output files (*.lst*, *.ext*, *.cov*): *available soon*.
+  * from a NONMEM *.xml* output file: *available soon*.
+  * from a model reported in the literature: *available soon*
+
+This "uncrtnty"-list object can be used to generate: 
+
+  * the code implemented within the NONMEM $PRIOR NWPRI routine: `u_to_nwpri()`
+  * the arguments to simulate with uncertainty thanks to the [simpar](https://github.com/metrumresearchgroup/simpar) package: `u_to_simpar()`
+
+## Applications
+#### Create the code for the $PRIOR routine in NONMEM
+```{r}
+u_to_nwpri(u_example)
+```
+
+#### Create the arguments to simulate with uncrtnty in simpar
+```{r}
+u_to_simpar(u_example, nsim = 100)
+```
+
+
+## Other useful features
 
   * Parse information about the "Block Form" of an OMEGA/SIGMA matrix from:
     + a *.lst* file with `parse_blockform_from_lst()`.
@@ -27,27 +72,4 @@ The goal of {uncrtnty} is to provide functions to deal with uncertainty in NONME
   * Turn a full OMEGA/SIGMA matrix into a list of OMEGA/SIGMA matrix blocks with `matrix_to_list()`.
   * Parse NONMEM estimate file (*.ext*) and covariance matrix file (*.cov*) into convenient output-list with `parse_ext()` and `parse_cov()`.
   * Compute degrees of freedom of the Inverse-Wishart distribution for OMEGA/SIGMA matrices with `compute_df()`.
-
-These functions are executed under the hood in the following functions, which turns an [xpose](https://github.com/UUPharmacometrics/xpose) database object into:
-
-  * a list of arguments to simulate with uncertainty, for instance with [simpar](https://github.com/metrumresearchgroup/simpar) with `xpose_to_simpar()`.
-  * the code needed for the "$PRIOR NWPRI" routine in NONMEM (*yet to come... soon*).
-
-## Installation
-
-You can install the development version of uncrtnty from [github](https://github.com/FelicienLL/uncrtnty) with:
-
-```{undefined eval=FALSE}
-install.packages("remotes")
-remotes::install_github("FelicienLL/uncrtnty")
-```
-
-## Example
-
-```{r}
-library(uncrtnty)
-x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#Example NONMEM run from the xpose package
-xpdb_to_simpar(x)
-```
-
+  * Parse the covariance matrix of estimations of ETA in the context on individual parameter estimation `parse_phi()`.

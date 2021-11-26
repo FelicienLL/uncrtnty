@@ -9,8 +9,180 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of {uncrtnty} is to provide functions to deal with uncertainty
-in NONMEM analyses.
+{uncrtnty} provides functions and an “uncrtnty”-list class in order to
+work with uncertainty in NONMEM analyses.
+
+## Installation
+
+You can install the development version of uncrtnty from
+[github](https://github.com/FelicienLL/uncrtnty) with:
+
+``` r
+install.packages("remotes")
+remotes::install_github("FelicienLL/uncrtnty")
+```
+
+## The big idea
+
+In NONMEM analyses, the uncertainty about parameter estimation can be
+described as followed. The estimation of THETA follows a multivariate
+normal distribution, with a mean vector (`th_est`) and a covariance
+matrix (`th_unc`) that carries the information about uncertainty. The
+estimates of OMEGA/SIGMA are matrices (`om_est/si_est`), and the
+uncertainty is informed by degrees of freedom (`om_unc/si_unc`). In
+{uncrtnty}, these information are storred into a single “uncrtnty”-list
+object.
+
+``` r
+library(uncrtnty)
+u_example
+#> $model
+#> [1] "example001"
+#> 
+#> $th_est
+#> [1] 111.00  22.00 333.00   4.44
+#> 
+#> $th_unc
+#>      [,1] [,2]  [,3] [,4]
+#> [1,] 1.11 0.12  0.13 0.14
+#> [2,] 0.12 2.00  0.23 0.24
+#> [3,] 0.13 0.23 33.00 0.34
+#> [4,] 0.14 0.24  0.34 4.40
+#> 
+#> $om_est
+#> $om_est[[1]]
+#>      [,1] [,2]
+#> [1,] 1.00 0.12
+#> [2,] 0.12 2.00
+#> 
+#> $om_est[[2]]
+#>      [,1]
+#> [1,]    3
+#> 
+#> 
+#> $om_unc
+#> [1] 45 67
+#> 
+#> $si_est
+#> $si_est[[1]]
+#>      [,1] [,2]
+#> [1,] 0.05    1
+#> [2,] 1.00   10
+#> 
+#> 
+#> $si_unc
+#> [1] 789
+#> 
+#> attr(,"class")
+#> [1] "uncrtnty"
+```
+
+This “uncrtnty”-list object can be created:
+
+-   from an [xpose](https://github.com/UUPharmacometrics/xpose) database
+    object: `u_from_xpdb()`.
+-   from NONMEM output files (*.lst*, *.ext*, *.cov*): *available soon*.
+-   from a NONMEM *.xml* output file: *available soon*.
+-   from a model reported in the literature: *available soon*
+
+This “uncrtnty”-list object can be used to generate:
+
+-   the code implemented within the NONMEM $PRIOR NWPRI routine:
+    `u_to_nwpri()`
+-   the arguments to simulate with uncertainty thanks to the
+    [simpar](https://github.com/metrumresearchgroup/simpar) package:
+    `u_to_simpar()`
+
+## Applications
+
+#### Create the code for the $PRIOR routine in NONMEM
+
+``` r
+u_to_nwpri(u_example)
+#> 
+#> 
+#> 
+#> $PRIOR NWPRI
+#> 
+#> ;======== PRIOR BLOCKS =======
+#> 
+#> $THETAP ; Prior values of THETA 
+#> 111  FIXED ; 1 
+#> 22   FIXED ; 2 
+#> 333  FIXED ; 3 
+#> 4.44 FIXED ; 4 
+#> 
+#> $THETAPV BLOCK(4) FIXED ; Prior weight on THETA (variance-covariance matrix)
+#> 1.11 ; 
+#> 0.12 2    ; 
+#> 0.13 0.23 33   ; 
+#> 0.14 0.24 0.34 4.4  ; 
+#> 
+#> $OMEGAP BLOCK(2) FIXED ; Prior values of OMEGA
+#> 1    ; 
+#> 0.12 2    ; 
+#> $OMEGAP BLOCK(1) FIXED ; Prior values of OMEGA
+#> 3 ; 
+#> 
+#> $OMEGAPD ; Prior weight on OMEGA (degrees of freedom)
+#> 45 FIXED ; 1 
+#> 67 FIXED ; 2 
+#> 
+#> $SIGMAP BLOCK(2) FIXED ; Prior values of SIGMA
+#> 0.05 ; 
+#> 1    10   ; 
+#> 
+#> $SIGMAPD ; Prior weight on SIGMA (degrees of freedom)
+#> 789 FIXED ; 1 
+#> 
+#> ;===== End of PRIOR BLOCKS =====
+#> 
+#> $COVARIANCE MATRIX = R
+```
+
+#### Create the arguments to simulate with uncrtnty in simpar
+
+``` r
+u_to_simpar(u_example, nsim = 100)
+#> $nsim
+#> [1] 100
+#> 
+#> $theta
+#> [1] 111.00  22.00 333.00   4.44
+#> 
+#> $covar
+#>      [,1] [,2]  [,3] [,4]
+#> [1,] 1.11 0.12  0.13 0.14
+#> [2,] 0.12 2.00  0.23 0.24
+#> [3,] 0.13 0.23 33.00 0.34
+#> [4,] 0.14 0.24  0.34 4.40
+#> 
+#> $omega
+#> $omega[[1]]
+#>      [,1] [,2]
+#> [1,] 1.00 0.12
+#> [2,] 0.12 2.00
+#> 
+#> $omega[[2]]
+#>      [,1]
+#> [1,]    3
+#> 
+#> 
+#> $sigma
+#> $sigma[[1]]
+#>      [,1] [,2]
+#> [1,] 0.05    1
+#> [2,] 1.00   10
+#> 
+#> 
+#> $odf
+#> [1] 45 67
+#> 
+#> $sdf
+#> [1] 789
+```
+
+## Other useful features
 
 -   Parse information about the “Block Form” of an OMEGA/SIGMA matrix
     from:
@@ -23,79 +195,5 @@ in NONMEM analyses.
     `parse_cov()`.
 -   Compute degrees of freedom of the Inverse-Wishart distribution for
     OMEGA/SIGMA matrices with `compute_df()`.
-
-These functions are executed under the hood in the following functions,
-which turns an [xpose](https://github.com/UUPharmacometrics/xpose)
-database object into:
-
--   a list of arguments to simulate with uncertainty, for instance with
-    [simpar](https://github.com/metrumresearchgroup/simpar) with
-    `xpose_to_simpar()`.
--   the code needed for the “$PRIOR NWPRI” routine in NONMEM (*yet to
-    come… soon*).
-
-## Installation
-
-You can install the development version of uncrtnty from
-[github](https://github.com/FelicienLL/uncrtnty) with:
-
-``` undefined
-install.packages("remotes")
-remotes::install_github("FelicienLL/uncrtnty")
-```
-
-## Example
-
-``` r
-library(uncrtnty)
-x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#Example NONMEM run from the xpose package
-xpdb_to_simpar(x)
-#> $theta
-#> [1] 26.29090000  1.34809000  4.20364000  0.20795800  0.20461000  0.01055270
-#> [7]  0.00717161
-#> 
-#> $covar
-#>            THETA1       THETA2       THETA3       THETA4       THETA5
-#> [1,]  0.794733000  2.05165e-02  0.072218300 -3.45023e-03  8.70613e-04
-#> [2,]  0.020516500  1.91942e-03 -0.008296640 -6.41703e-05  2.53143e-04
-#> [3,]  0.072218300 -8.29664e-03  0.654666000  3.21678e-03 -4.70861e-03
-#> [4,] -0.003450230 -6.41703e-05  0.003216780  2.46749e-04 -5.78968e-05
-#> [5,]  0.000870613  2.53143e-04 -0.004708610 -5.78968e-05  5.03582e-04
-#> [6,]  0.000630374 -3.17438e-06 -0.000652174 -1.52831e-05 -3.14227e-05
-#> [7,] -0.000330216  5.45514e-06 -0.000314608  2.46140e-06  3.14954e-06
-#>            THETA6       THETA7
-#> [1,]  6.30374e-04 -3.30216e-04
-#> [2,] -3.17438e-06  5.45514e-06
-#> [3,] -6.52174e-04 -3.14608e-04
-#> [4,] -1.52831e-05  2.46140e-06
-#> [5,] -3.14227e-05  3.14954e-06
-#> [6,]  1.33803e-05 -1.58021e-06
-#> [7,] -1.58021e-06  2.87818e-06
-#> 
-#> $omega
-#> $omega[[1]]
-#>           [,1]
-#> [1,] 0.0729525
-#> 
-#> $omega[[2]]
-#>           [,1]
-#> [1,] 0.0380192
-#> 
-#> $omega[[3]]
-#>         [,1]
-#> [1,] 1.90699
-#> 
-#> 
-#> $sigma
-#> $sigma[[1]]
-#>      [,1]
-#> [1,]    1
-#> 
-#> 
-#> $odf
-#> [1] 67 19 23
-#> 
-#> $sdf
-#> [1] Inf
-```
+-   Parse the covariance matrix of estimations of ETA in the context on
+    individual parameter estimation `parse_phi()`.
