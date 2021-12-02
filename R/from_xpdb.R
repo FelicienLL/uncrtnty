@@ -11,6 +11,7 @@
 #' class(u)
 u_from_xpdb <- function(xpdb){
   stopifnot(inherits(xpdb, "xpose_data"))
+  #parse elements
   p_lst <- parse_lst(get_lst(xpdb))
   p_ext <- parse_ext(get_ext(xpdb))
   p_cov <- parse_cov(get_cov(xpdb))
@@ -18,19 +19,18 @@ u_from_xpdb <- function(xpdb){
   omega <- matrix_to_list(p_ext$omega, blockform = p_lst$om_blockform)
   sigma <- matrix_to_list(p_ext$sigma, blockform = p_lst$si_blockform)
 
-  ans <- list(
+  #make uncrtnty object
+  uncrtnty(
     model  = xpdb$summary$value[xpdb$summary$label=="run"],
     nid    = p_lst$nid,
     nobs   = p_lst$nobs,
     th_est = p_ext$theta,
     th_unc = p_cov$theta,
     om_est = omega,
-    om_unc = mapply(compute_df, omega, matrix_to_list(p_cov$omega, blockform = p_lst$om_blockform)),
+    om_unc = mapply(compute_df, omega, matrix_to_list(p_cov$omega, blockform = p_lst$om_blockform), MoreArgs = list(maxdf = p_lst$nid)),
     si_est = sigma,
-    si_unc = mapply(compute_df, sigma, matrix_to_list(p_cov$sigma, blockform = p_lst$si_blockform))
-  )
-  class(ans) <- "uncrtnty"
-  return(ans)
+    si_unc = mapply(compute_df, sigma, matrix_to_list(p_cov$sigma, blockform = p_lst$si_blockform), MoreArgs = list(maxdf = p_lst$nobs))
+    )
 }
 
 # =============  UTILS to work on XPOSE objects =============

@@ -19,11 +19,11 @@ test_that("uncrtnty object integrity is ok", {
   expect_true(is.matrix(u$th_unc))
 
   expect_true(all(sapply(u$om_est, is.matrix)))
-  expect_type(u$om_unc, "double")
+  expect_type(u$om_unc, "integer")
   expect_equal(length(u$om_est), length(u$om_unc))
 
   expect_true(all(sapply(u$si_est, is.matrix)))
-  expect_type(u$si_unc, "double")
+  expect_type(u$si_unc, "integer")
   expect_equal(length(u$si_est), length(u$si_unc))
 })
 
