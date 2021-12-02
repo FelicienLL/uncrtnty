@@ -3,6 +3,7 @@
 #' @param est a variance-covariance matrix of estimation (i.e. OMEGA² or SIGMA²)
 #' @param se a matrix of the standard errors of each element of `est`
 #' @param add_1 add +1 to the computation of degree of freedom. See details.
+#' @param maxdf censor the computed value. Typically the number of subjects/observations in the original analysis.
 #'
 #' @details The function uses a formula "courtesy of Mats Karlsson", found in Robert J. Bauer's "NONMEM Tutorial Part II" (CPT:Pharmacometrics Syst Pharmacol (2019), 8, 538–556 ; Supplementary Materials S1 - Part C). If the dimension of the matrix is > 1, the lowest degree of freedom is selected. The degree of freedom value cannot be lower than the dimension of the matrix. The degree of freedom value should not be higher than the number of individual in the original data for an "OMEGA matrix", or the number of observation for a "SIGMA matrix".
 #'
@@ -13,13 +14,21 @@
 #' est_om <- matrix(c(0.2, 0.01, 0.01, 0.1), ncol = 2)
 #' se_om <- matrix(c(0.02, 0.005, 0.005, 0.03), ncol = 2)
 #' compute_df(est = est_om, se = se_om)
-compute_df <- function(est, se, add_1 = FALSE){
+compute_df <- function(est, se, add_1 = FALSE, maxdf = Inf){
   stopifnot(length(est) == length(se), is.logical(add_1), all(class(est)==class(se)))
   if(is.matrix(est) & is.matrix(se)){
     est <- diag(est)
     se <- diag(se)
   }
-  df <- 2 * (est / se)^2 + as.integer(add_1)
-  df <- max(round(min(df), 0), length(df))
+
+  df <- round(2 * (est / se)^2 + as.integer(add_1), 0) #computed value(s)
+
+  df <- min(df) #if matrix of dimension > 1, keep the smallest value
+
+  #Then censor
+  df <- max(df, length(df)) #minimum df = dimension of matrix
+  df <- min(df, maxdf) #maximum df = number of obs/id
+
+  if(df != Inf) df <- as.integer(df)
   df
 }

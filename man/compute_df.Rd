@@ -4,7 +4,7 @@
 \alias{compute_df}
 \title{Compute the degree of freedom for Inverse Wishart distribution}
 \usage{
-compute_df(est, se, add_1 = FALSE)
+compute_df(est, se, add_1 = FALSE, maxdf = Inf)
 }
 \arguments{
 \item{est}{a variance-covariance matrix of estimation (i.e. OMEGA² or SIGMA²)}
@@ -12,6 +12,8 @@ compute_df(est, se, add_1 = FALSE)
 \item{se}{a matrix of the standard errors of each element of `est`}
 
 \item{add_1}{add +1 to the computation of degree of freedom. See details.}
+
+\item{maxdf}{censor the computed value. Typically the number of subjects/observations in the original analysis.}
 }
 \value{
 a single integer value
