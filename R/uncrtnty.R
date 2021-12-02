@@ -11,14 +11,14 @@ new_uncrtnty <- function(model  = character(),
 
   x <- list(
     model  = model,
-    nid    = nid,
-    nobs   = nobs,
+    nid    = as.integer(nid),
+    nobs   = as.integer(nobs),
     th_est = th_est,
     th_unc = th_unc,
     om_est = om_est,
-    om_unc = om_unc,
+    om_unc = as.integer(om_unc),
     si_est = si_est,
-    si_unc = si_unc
+    si_unc = as.integer(si_unc)
   )
 
   structure(x, class = "uncrtnty")
@@ -27,7 +27,66 @@ new_uncrtnty <- function(model  = character(),
 
 #Validator
 validate_uncrtnty <- function(x){
+  expected_names <- c("model", "nid", "nobs", "th_est", "th_unc", "om_est", "om_unc", "si_est", "si_unc")
 
+  if(any(names(x) != expected_names)){
+    stop(glue::glue("Expected names are: {glue::glue_collapse(expected_names, sep = ', ', last = ' and ')}."), call. = FALSE)
+  }
+
+  #THETA
+
+  stopifnot(is.double(x$th_est))
+
+  if(length(x$th_est > 0)){
+
+    stopifnot(is.double(x$th_unc), is.matrix(x$th_unc), is.symmetric(x$th_unc))
+
+    if(length(x$th_est) != dim(x$th_unc)[1]){
+      stop(glue::glue("`th_est` is of length {length(x$th_est)} but `th_unc` is a {dim(x$th_unc)[1]}x{dim(x$th_unc)[1]} matrix."), call. = FALSE)
+    }
+  }
+
+  #OMEGA
+
+  stopifnot(is.list(x$om_est))
+
+  if(length(x$om_est) > 0){
+
+    stopifnot(sapply(x$om_est, is.matrix), sapply(x$om_est, is.double), sapply(x$om_est, is.symmetric), is.integer(x$om_unc))
+
+    if(length(x$om_est) != length(x$om_unc)){
+      stop(glue::glue("`om_est` is made of {length(x$om_est)} matrix/ces, but `om_unc` is a length {length(x$om_unc)} vector."), call. = FALSE)
+    }
+
+    if((length(x$nid) > 0 & any(x$om_unc > x$nid))){
+      stop(glue::glue("Omega degrees of freedom cannot exceed the number of subjects ({x$nid})."), call. = FALSE)
+    }
+    if(any(x$om_unc < sapply(x$om_est, function(x)dim(x)[1]))){
+      stop(glue::glue("Omega degrees of freedom cannot be lower than the dimension of the matrix (`om_est`)."), call. = FALSE)
+    }
+  }
+
+  #SIGMA
+
+  stopifnot(is.list(x$si_est))
+
+  if(length(x$si_est) > 0){
+
+    stopifnot(sapply(x$si_est, is.matrix), sapply(x$si_est, is.double), sapply(x$si_est, is.symmetric), is.integer(x$si_unc))
+
+    if(length(x$si_est) != length(x$si_unc)){
+      stop(glue::glue("`si_est` is made of {length(x$si_est)} matrix/ces, but `si_unc` is a length {length(x$si_unc)} vector."), call. = FALSE)
+    }
+
+    if(length(x$nobs) > 0 & any(x$si_unc > x$nobs)){
+      stop(glue::glue("Sigma degrees of freedom cannot exceed the number of observations ({x$nobs})."), call. = FALSE)
+    }
+
+    if(any(x$si_unc < sapply(x$si_est, function(x)dim(x)[1]))){
+      stop(glue::glue("Sigma degrees of freedom cannot be lower than the dimension of the matrix (`si_est`)."), call. = FALSE)
+    }
+  }
+  x
 }
 
 #Helper
@@ -40,6 +99,8 @@ uncrtnty <- function(model  = character(),
                      om_unc = integer(),
                      si_est = list(),
                      si_unc = integer()){
+
+  validate_uncrtnty(new_uncrtnty(model, nid, nobs, th_est, th_unc, om_est, om_unc, si_est, si_unc))
 
 }
 
@@ -83,3 +144,4 @@ is.symmetric <- function(x){
   }
 
   return(TRUE)
+}
