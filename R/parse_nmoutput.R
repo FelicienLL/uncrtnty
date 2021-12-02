@@ -81,7 +81,7 @@ parse_lst <- function(lst){
 #'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' ext <- get_ext(x)
+#' ext <- x$files$data[x$files$extension=="ext"][[1]]
 #' parse_ext(ext)
 parse_ext <- function(tab){
   stopifnot(inherits(tab, "data.frame"))
@@ -102,7 +102,7 @@ parse_ext <- function(tab){
 #'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' cov <- get_cov(x)
+#' cov <- x$files$data[x$files$extension=="cov"][[1]]
 #' parse_cov(cov)
 parse_cov <- function(tab){
   stopifnot(inherits(tab, "data.frame"))
@@ -123,7 +123,7 @@ parse_cov <- function(tab){
 #'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' phi <- get_phi(x)
+#' phi <- uncrtnty:::get_phi(x)
 #' parse_phi(head(phi, 3)) #first 3 individuals for the example
 parse_phi <- function(tab){
   IDs <- tab$ID

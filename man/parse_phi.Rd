@@ -17,6 +17,6 @@ Parse a phi table to useful individual etas and covariance matrix
 }
 \examples{
 x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-phi <- get_phi(x)
+phi <- uncrtnty:::get_phi(x)
 parse_phi(head(phi, 3)) #first 3 individuals for the example
 }

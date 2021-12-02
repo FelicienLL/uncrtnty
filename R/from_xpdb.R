@@ -12,9 +12,9 @@
 u_from_xpdb <- function(xpdb){
   stopifnot(inherits(xpdb, "xpose_data"))
   #parse elements
-  p_lst <- parse_lst(get_lst(xpdb))
-  p_ext <- parse_ext(get_ext(xpdb))
-  p_cov <- parse_cov(get_cov(xpdb))
+  p_lst <- parse_lst(xpdb$code$code[xpdb$code$subroutine=="lst"])
+  p_ext <- parse_ext(xpdb$files$data[xpdb$files$extension=="ext"][[1]])
+  p_cov <- parse_cov(xpdb$files$data[xpdb$files$extension=="cov"][[1]])
 
   omega <- matrix_to_list(p_ext$omega, blockform = p_lst$om_blockform)
   sigma <- matrix_to_list(p_ext$sigma, blockform = p_lst$si_blockform)
@@ -35,61 +35,15 @@ u_from_xpdb <- function(xpdb){
 
 # =============  UTILS to work on XPOSE objects =============
 
-#' Extract .lst file from xpose object
-#'
-#' @param xpdb an object of "xpose_data" class
-#'
-#' @return lst file in the form of a character vector.
-#' @export
-#'
-#' @examples
-#' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' get_lst(x)
-get_lst <- function(xpdb){
-  stopifnot(inherits(xpdb, "xpose_data"))
-  xpdb$code$code[xpdb$code$subroutine=="lst"]
-}
-
-#' Extract .cov file from xpose object
-#'
-#' @param xpdb an object of "xpose_data" class
-#'
-#' @return cov file in the form of a tibble dataset.
-#' @export
-#'
-#' @examples
-#' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' get_cov(x)
-get_cov <- function(xpdb){
-  stopifnot(inherits(xpdb, "xpose_data"))
-  xpdb$files$data[xpdb$files$extension=="cov"][[1]]
-}
-
-#' Extract .ext file from xpose object
-#'
-#' @param xpdb an object of "xpose_data" class
-#'
-#' @return ext file in the form of a tibble dataset.
-#' @export
-#'
-#' @examples
-#' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' get_ext(x)
-get_ext <- function(xpdb){
-  stopifnot(inherits(xpdb, "xpose_data"))
-  xpdb$files$data[xpdb$files$extension=="ext"][[1]]
-}
 
 #' Extract .phi file from xpose object
 #'
 #' @param xpdb an object of "xpose_data" class
 #'
 #' @return phi file in the form of a tibble dataset.
-#' @export
-#'
 #' @examples
 #' x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-#' get_phi(x)
+#' uncrtnty:::get_phi(x)
 get_phi <- function(xpdb){
   stopifnot(inherits(xpdb, "xpose_data"))
   xpdb$files$data[xpdb$files$extension=="phi"][[1]]

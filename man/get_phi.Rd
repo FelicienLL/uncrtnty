@@ -17,5 +17,5 @@ Extract .phi file from xpose object
 }
 \examples{
 x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-get_phi(x)
+uncrtnty:::get_phi(x)
 }

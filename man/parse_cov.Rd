@@ -17,6 +17,6 @@ Parse a covariance table to useful matrices
 }
 \examples{
 x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-cov <- get_cov(x)
+cov <- x$files$data[x$files$extension=="cov"][[1]]
 parse_cov(cov)
 }

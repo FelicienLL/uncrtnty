@@ -17,6 +17,6 @@ Parse a ext table to a list with final estimates
 }
 \examples{
 x <- readRDS(system.file("xposerun", "xpdb_ex_pk.rds", package = "uncrtnty"))
-ext <- get_ext(x)
+ext <- x$files$data[x$files$extension=="ext"][[1]]
 parse_ext(ext)
 }
