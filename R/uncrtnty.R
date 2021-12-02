@@ -90,6 +90,24 @@ validate_uncrtnty <- function(x){
 }
 
 #Helper
+#' Build an `uncrtnty` list object
+#'
+#' @param model character, simple description of the model
+#' @param nid integer, the number of subjects in the orginal analysis
+#' @param nobs integer, the number of observations in the original analysis
+#' @param th_est double vector, estimations of theta
+#' @param th_unc double matrix, uncertainty of theta, under the form of a covariance matrix
+#' @param om_est list of double matrices, estimations of omega
+#' @param om_unc integer vector, uncertainty of omega, under the form of degrees of freedom
+#' @param si_est list of double matrices, estimations of sigma
+#' @param si_unc integer vector, uncertainty of sigma, under the form of degrees of freedom
+#'
+#' @return an `uncrtnty` list object.
+#' @export
+#' @details This function is not meant to be used by the user, but by more user-friendly functions such as `u_from_xpdb()` for instance.
+#'
+#' @examples
+#' u_example
 uncrtnty <- function(model  = character(),
                      nid    = integer(),
                      nobs   = integer(),
