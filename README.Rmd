@@ -79,7 +79,8 @@ m <- matrix(c(1, 0.12, 0.13, 0, 0, 0.12, 2, 0.23, 0, 0, 0.13, 0.23, 3, 0, 0, 0, 
     + a *.lst* file with `parse_blockform_from_lst()`.
 ```{r}
 cat(lstfile[84:110], sep = "\n") # zoom inside a NONMEM .lst file
-parse_blockform_from_lst(lst = lstfile)
+parse_lst(lst = lstfile)$om_blockform
+parse_lst(lst = lstfile)$si_blockform
 ```
   *   
     + the matrix itself with `infer_blockform()`.

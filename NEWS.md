@@ -1,6 +1,9 @@
-# uncrtnty 0.1.1.9001
-* Add `parse_lst()`, that can also extract the number of ID/OBS from the .lst, in lieu of `parse_blockform_from_lst()`
-* More example in Readme
+# uncrtnty 0.1.2
+* uncrtnty-list object are created thanks to `uncrtnty()`, that combines a constructor and a validator for more safety (see #3).
+* `compute_df()` now accepts a `maxdf` to censor the maximum degree of freedom to the number of id/observations (see #2)
+* Add `parse_lst()`, that can also extract the number of ID/OBS from the .lst, instead of `parse_blockform_from_lst()`
+* Remove the `get_x()` functions that extracted information from xpose_data base objects
+* Update README and examples
 
 # uncrtnty 0.1.1
 * The package now works on a single `uncrtnty`-list object, that is 

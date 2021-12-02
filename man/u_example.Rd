@@ -5,7 +5,7 @@
 \alias{u_example}
 \title{An example of uncrtnty-list object}
 \format{
-An object of class \code{uncrtnty} of length 7.
+An object of class \code{uncrtnty} of length 9.
 }
 \usage{
 u_example

@@ -39,6 +39,12 @@ u_example
 #> $model
 #> [1] "example001"
 #> 
+#> $nid
+#> [1] 100
+#> 
+#> $nobs
+#> [1] 1000
+#> 
 #> $th_est
 #> [1] 111.00  22.00 333.00   4.44
 #> 
@@ -217,11 +223,9 @@ cat(lstfile[84:110], sep = "\n") # zoom inside a NONMEM .lst file
 #>   0  0  0  0  0  4
 #>   0  0  0  0  0  0  5
 #> 0DEFAULT SIGMA BOUNDARY TEST OMITTED:    NO
-parse_blockform_from_lst(lst = lstfile)
-#> $omega
+parse_lst(lst = lstfile)$om_blockform
 #>  [1] 1 1 2 3 3 3 4 5 6 6 7 8 9 9 9 9
-#> 
-#> $sigma
+parse_lst(lst = lstfile)$si_blockform
 #> [1] 1 1 2 3 3 4 5
 ```
 
