@@ -73,10 +73,8 @@ m <- matrix(c(1, 0.12, 0.13, 0, 0, 0.12, 2, 0.23, 0, 0, 0.13, 0.23, 3, 0, 0, 0, 
 ```
 
 
-
-
   * Parse information about the "Block Form" of an OMEGA/SIGMA matrix from:
-    + a *.lst* file with `parse_blockform_from_lst()`.
+    + a *.lst* file with `parse_lst()`.
 ```{r}
 cat(lstfile[84:110], sep = "\n") # zoom inside a NONMEM .lst file
 parse_lst(lst = lstfile)$om_blockform
@@ -96,7 +94,7 @@ infer_blockform(m)
 matrix_to_list(m)
 ```
   
-  * Parse NONMEM estimate file (*.ext*) and covariance matrix file (*.cov*) into convenient output-list with `parse_ext()` and `parse_cov()`.
+  * Parse NONMEM estimate file (*.ext*), covariance matrix file (*.cov*) and individual estimates (*.phi*) into convenient output-list with `parse_ext()`, `parse_cov()` and `parse_phi()`.
   
   * Compute degrees of freedom of the Inverse-Wishart distribution for OMEGA/SIGMA matrices with `compute_df()`.
 ```{r}
@@ -104,5 +102,3 @@ est_om <- matrix(c(0.2, 0.01, 0.01, 0.1), ncol = 2)
 se_om <- matrix(c(0.02, 0.005, 0.005, 0.03), ncol = 2)
 compute_df(est = est_om, se = se_om)
 ```
-  
-  * Parse the covariance matrix of estimations of ETA in the context on individual parameter estimation `parse_phi()`.

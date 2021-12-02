@@ -1,3 +1,6 @@
+# uncrtnty development version
+* Fix readme and update description
+
 # uncrtnty 0.1.2
 * uncrtnty-list object are created thanks to `uncrtnty()`, that combines a constructor and a validator for more safety (see #3).
 * `compute_df()` now accepts a `maxdf` to censor the maximum degree of freedom to the number of id/observations (see #2)
