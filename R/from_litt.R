@@ -47,7 +47,7 @@
 #' @export
 #'
 #' @examples
-#' u_from_litt(
+#' u_from_liter(
 #' model = "Test", nid = 250, nobs = 12345, #initial model
 #' th_est = c(1,22,333,0.444),
 #' th_unc = as_rse(list(0.2, 0.25, 0.3, .80)), #RSE on THETA are 20%, 25%, 30% and 80%
@@ -57,18 +57,18 @@
 #' si_unc = as_rse(list(0.05)) #5% RSE
 #' )
 #'
-u_from_litt <- function(model = "Prior model", nid = Inf, nobs = Inf, th_est, th_unc, om_est, om_unc, si_est, si_unc){
+u_from_liter <- function(model = "Prior model", nid = Inf, nobs = Inf, th_est, th_unc, om_est, om_unc, si_est, si_unc){
   #parse elements
   ## THETA
-  .th_unc <- litt_th_unc(th_unc, th_est)
+  .th_unc <- liter_th_unc(th_unc, th_est)
 
   ## OMEGA
-  .om_est <- litt_re_est(om_est)
-  .om_unc <- litt_re_unc(om_unc, re_est = .om_est, attr(om_est, "reporttype"), re = "OMEGA")
+  .om_est <- liter_re_est(om_est)
+  .om_unc <- liter_re_unc(om_unc, re_est = .om_est, attr(om_est, "reporttype"), re = "OMEGA")
 
   ## SIGMA
-  .si_est <- litt_re_est(si_est)
-  .si_unc <- litt_re_unc(si_unc, re_est = .si_est, attr(si_est, "reporttype"), re = "SIGMA")
+  .si_est <- liter_re_est(si_est)
+  .si_unc <- liter_re_unc(si_unc, re_est = .si_est, attr(si_est, "reporttype"), re = "SIGMA")
 
   #make uncrtnty object
   uncrtnty(
@@ -127,7 +127,7 @@ is_ci90 <- function(x) isTRUE(attr(x, "reporttype") == "ci90")
 
 
 
-litt_th_unc <- function(th_unc, th_est){
+liter_th_unc <- function(th_unc, th_est){
   if(is_rse(th_unc)){
     stopifnot(length(th_unc) == length(th_est))
     rse <- unlist(th_unc)
@@ -159,7 +159,7 @@ litt_th_unc <- function(th_unc, th_est){
 }
 
 
-litt_re_est <- function(re_est){
+liter_re_est <- function(re_est){
   if(is_cv(re_est)){
     cv <- unlist(re_est)
     var <- cv * cv
@@ -175,7 +175,7 @@ litt_re_est <- function(re_est){
   return(lapply(re_est, as.matrix))
 }
 
-litt_re_unc <- function(re_unc, re_est, re_est_reporttype, re = "OMEGA/SIGMA"){
+liter_re_unc <- function(re_unc, re_est, re_est_reporttype, re = "OMEGA/SIGMA"){
   #re_est = random effect estimate = always as a variance (already processed before)
   #retrieve uncertainty on random effect stored as list of SE matrices since SE will be used to compute degree freedom
 
